@@ -13,8 +13,8 @@
 
 <body>
     <header>
-        <a href="highscores">View highscores</a>
-        <div class="timer">Timer</div>
+        <a href="highscores" id="viewScores">View highscores</a>
+        <div id="timer">Timer</div>
     </header>
     <!-- Title -->
     <h1>Coding Quiz</h1>
@@ -25,7 +25,14 @@
     <button id="startQuiz">Start Quiz</button>
     <!-- Attach questions here -->
     <div id="questions"></div>
+    <div>
+        <!-- input for high score -->
+        <p>Enter your initials to record your score</p>
+        <input id="initials" type="text">
+        <button id="saveInitials">Save</button>
+    </div>
+    <div id="showScores"></div>
     <script src="./assets/script.js"></script>
 </body>
 
-</html>`
+</html>
