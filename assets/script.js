@@ -22,65 +22,52 @@ let timer = 0;
 function startQuiz() {
   timer = setInterval(function () {
     time--;``
+    ``;
     timerDiv.innerHTML = time;
   }, 1000);
   alert("I started the game.");
   // Call create buttons function
+
   // loop through the length of questions, and call create buttons each time
   // switch 0 index
-  createButtons(0);
 
-  function createButtons(index) {
-    // Bring up question
-    let title = document.createElement("h2");
-    title.textContent = questions[index].title;
-    questionDiv.appendChild(title);
-    // Add four answer options
-
-    let buttonOne = document.createElement("button");
-    buttonOne.textContent = questions[index].choices[0];
-    buttonOne.dataset.answer = questions[index].answer;
-    questionDiv.appendChild(buttonOne);
-    // remove these lines
-    let buttonTwo = document.createElement("button");
-    buttonTwo.textContent = questions[index].choices[1];
-    buttonTwo.dataset.answer = questions[index].answer;
-    questionDiv.appendChild(buttonTwo);
-    let buttonThree = document.createElement("button");
-    buttonThree.textContent = questions[index].choices[2];
-    buttonThree.dataset.answer = questions[index].answer;
-    questionDiv.appendChild(buttonThree);
-    let buttonFour = document.createElement("button");
-    buttonFour.textContent = questions[index].choices[3];
-    buttonFour.dataset.answer = questions[index].answer;
-    questionDiv.appendChild(buttonFour);
-  }
+  createQuestion(0);
 
   // make clickable
   questionDiv.addEventListener("click", function (event) {
     ``;
     console.log("clicked");
     let element = event.target;
+    let verify = document.createElement("p");
+    questionsIndex++;
+    if (questionsIndex > questions.length - 1) {
+      alert("Game over");
+      score = time;
+      clearInterval(timer);
+      questionDiv.innerHTML = "";
+    }
     if (element.dataset.answer === element.textContent) {
-      let verify = document.createElement("p");
       verify.textContent = correctOrNot[0];
       questionDiv.appendChild(verify);
-      questionsIndex++;
-
-      if (questionsIndex > questions.length - 1) {
-        alert("Game over");
-        score = time;
-        clearInterval(timer);
-      } else {
-        createButtons(questionsIndex);
-      }
+      createQuestion(questionsIndex);
     } else {
-      let verify = document.createElement("p");
       verify.textContent = correctOrNot[1];
       questionDiv.appendChild(verify);
-      questionsIndex++;
-      createButtons(questionsIndex);
+      time = time - 10;
+      createQuestion(questionsIndex);
     }
+  });
+}
+
+function createQuestion(index) {
+  let title = document.createElement("h2");
+  title.textContent = questions[index].title;
+  questionDiv.appendChild(title);
+  questions[index].choices.forEach((choice) => {
+    let buttonOne = document.createElement("button");
+    buttonOne.textContent = choice;
+    buttonOne.dataset.answer = questions[index].answer;
+    questionDiv.appendChild(buttonOne);
   });
 }
 
