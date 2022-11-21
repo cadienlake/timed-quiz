@@ -1,76 +1,85 @@
 // Global Variables
+let enterInitials = document.querySelector("#enterInitials");
 let saveScore = document.querySelector("#saveInitials");
 let showScores = document.querySelector("#showScores");
 let viewScores = document.querySelector("#viewScores");
+let wantToStart = document.querySelector("#wantToStart");
 let startQuizbtn = document.querySelector("#startQuiz");
 let questionDiv = document.querySelector("#questions");
 let timerDiv = document.querySelector("#timer");
+let verify = document.querySelector("#verify");
+
 let questions = [
-  { title: "First Question", choices: ["First answer", "Second answer", "Third answer", "Fourth answer"], answer: "Fourth answer" },
-  { title: "Second Question", choices: ["First answer", "Second answer", "Third answer", "Fourth answer"], answer: "Third answer" },
-  { title: "Third Question", choices: ["First answer", "Second answer", "Third answer", "Fourth answer"], answer: "Second answer" },
-  { title: "Fourth Question", choices: ["First answer", "Second answer", "Third answer", "Fourth answer"], answer: "First answer" },
+  { title: "5+5=?", choices: ["0", "1", "10", "25"], answer: "10" },
+  { title: "5-5=?", choices: ["0", "1", "10", "25"], answer: "0" },
+  { title: "5x5=?", choices: ["0", "1", "10", "25"], answer: "25" },
+  { title: "5/5=?", choices: ["0", "1", "10", "25"], answer: "1" },
 ];
 let correctOrNot = ["Correct", "Incorrect"];
 let questionsIndex = 0;
 // If the string is undefined, it defaults via the or statement to an empty array
 let scores = JSON.parse(localStorage.getItem("scores")) || [];
 let score = 0;
+// default for timer
 let time = 60;
 let timer = 0;
+
 // Functions
 function startQuiz() {
+  // remove highscore list if displayed before start of quiz
+  showScores.innerHTML = "";
+  // begins timer countdown
   timer = setInterval(function () {
-    time--;``
-    ``;
+    time--;
     timerDiv.innerHTML = time;
   }, 1000);
-  alert("I started the game.");
+  wantToStart.innerHTML = "";
   // Call create buttons function
-
-  // loop through the length of questions, and call create buttons each time
-  // switch 0 index
-
   createQuestion(0);
 
-  // make clickable
+  // loop to next question when clicking an answer
   questionDiv.addEventListener("click", function (event) {
-    ``;
     console.log("clicked");
     let element = event.target;
-    let verify = document.createElement("p");
     questionsIndex++;
+    // end game if no more questions in array
     if (questionsIndex > questions.length - 1) {
-      alert("Game over");
       score = time;
       clearInterval(timer);
+      // Clear questions
       questionDiv.innerHTML = "";
+      // Reveal initials input
+      enterInitials.classList.remove("d-none");
     }
+    // If the answer is correct, display correct; if incorret, display incorrect and deduct time
     if (element.dataset.answer === element.textContent) {
-      verify.textContent = correctOrNot[0];
-      questionDiv.appendChild(verify);
+      verify.innerHTML = correctOrNot[0];
+      questionDiv.innerHTML = "";
       createQuestion(questionsIndex);
     } else {
-      verify.textContent = correctOrNot[1];
-      questionDiv.appendChild(verify);
+      verify.innerHTML = correctOrNot[1];
       time = time - 10;
+      questionDiv.innerHTML = "";
       createQuestion(questionsIndex);
     }
   });
 }
 
+// create elements within the html displaying content from the Questions array
 function createQuestion(index) {
   let title = document.createElement("h2");
   title.textContent = questions[index].title;
   questionDiv.appendChild(title);
   questions[index].choices.forEach((choice) => {
-    let buttonOne = document.createElement("button");
-    buttonOne.textContent = choice;
-    buttonOne.dataset.answer = questions[index].answer;
-    questionDiv.appendChild(buttonOne);
+    let buttons = document.createElement("button");
+    buttons.textContent = choice;
+    buttons.classList.add("btn-success");
+    buttons.dataset.answer = questions[index].answer;
+    questionDiv.appendChild(buttons);
   });
 }
 
+// Record users initials and the time remaining on the timer as their score.
 function enterScore() {
   let initials = document.querySelector("#initials").value;
   let userScore = {
@@ -78,9 +87,15 @@ function enterScore() {
     score: score,
   };
   scores.push(userScore);
-  scores.localStorage.setItem("scores", JSON.stringify(scores));
+  // Sort through the top five values of the local storage scores.
+  scores.sort((score1, score2) => {
+    return score1.score < score2.score ? 1 : -1;
+  });
+  scores = scores.slice(0, 5);
+  localStorage.setItem("scores", JSON.stringify(scores));
 }
 
+// display the top scores when clicking the View Highscores link.`
 function displayScores(event) {
   event.preventDefault();
   scores.forEach((scr) => {
@@ -89,7 +104,7 @@ function displayScores(event) {
 }
 
 // Function Calls
-
 startQuizbtn.addEventListener("click", startQuiz);
 saveScore.addEventListener("click", enterScore);
+saveScore.addEventListener("click", displayScores);
 viewScores.addEventListener("click", displayScores);
