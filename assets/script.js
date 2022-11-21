@@ -32,6 +32,11 @@ function startQuiz() {
   timer = setInterval(function () {
     time--;
     timerDiv.innerHTML = time;
+    // Game over if time runs out
+    if (time === 0) {
+      clearInterval(timer);
+      questionDiv.innerHTML = "YOU RAN OUT OF TIME!<br>Game over :(";
+    }
   }, 1000);
   wantToStart.innerHTML = "";
   // Call create buttons function
@@ -43,7 +48,7 @@ function startQuiz() {
     let element = event.target;
     questionsIndex++;
     // end game if no more questions in array
-    if (questionsIndex > questions.length - 1) {
+    if (questionsIndex > questions.length - 1 || time === 0) {
       score = time;
       clearInterval(timer);
       // Clear questions
